@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import AdminPanel from "../components/AdminPanel";
 import LoginForm from "../components/LoginForm";
+import MyButton from "../components/MyButton";
 
 function ConditionalRendering() {
    let [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -25,9 +26,9 @@ function ConditionalRendering() {
 
          <div>{isLoggedIn ? <AdminPanel /> : <LoginForm />}</div>
          {isLoggedIn ? (
-            <button onClick={handleLog}>Login</button>
+            <MyButton title={"Login"} onClick={handleLog} />
          ) : (
-            <button onClick={handleLog}>Logout</button>
+            <MyButton title={"Logout"} onClick={handleLog} />
          )}
       </>
    );

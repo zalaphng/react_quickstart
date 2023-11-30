@@ -17,6 +17,8 @@ import RenderingList from "./pages/RenderingList";
 import RespondingEvent from "./pages/RespondingEvent";
 import UpdatingScreen from "./pages/UpdatingScreen";
 import SharingData from "./pages/SharingData";
+import TicTacToe from "./pages/TicTacToe";
+import Navbar from "./components/Navbar";
 
 function App() {
    const routes = [
@@ -80,13 +82,19 @@ function App() {
          element: <SharingData />,
          label: "SharingData",
       },
+      {
+         key: 11,
+         path: "/tictactoe",
+         element: <TicTacToe />,
+         label: "TicTacToe",
+      },
    ];
 
    return (
       <>
          <Router>
             <div>
-               <nav>
+               {/* <nav>
                   <ol>
                      {routes.map((route) => {
                         return (
@@ -96,7 +104,21 @@ function App() {
                         );
                      })}
                   </ol>
-               </nav>
+               </nav> */}
+
+               <Navbar>
+                  {routes.map((route) => {
+                     return (
+                        <Link
+                           className="text-white hover:text-gray-300 px-3 py-2 rounded-md"
+                           key={route.key}
+                           to={route.path}
+                        >
+                           {route.label}
+                        </Link>
+                     );
+                  })}
+               </Navbar>
 
                <Routes>
                   {routes.map((route) => {
