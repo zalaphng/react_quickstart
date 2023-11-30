@@ -1,20 +1,18 @@
 import React, { useState } from "react";
 import Square from "../components/TicTacToe/Square";
-// import styled from "styled-components";
+import styled from "styled-components";
 
-function Board() {
-   const [xIsNext, setXIsNext] = useState(true);
-   const [squares, setSquares] = useState(Array(9).fill(null));
-   const winner = calculateWinner(squares);
-   let status;
-   if (winner) {
-      status = "Winner: " + winner;
-   } else {
-      status = "Next player: " + (xIsNext ? "X" : "O");
-   }
+function Board({ xIsNext, squares, onPlay }) {
+   const BoardRow = styled.div`
+      &:after {
+         clear: both;
+         content: "";
+         display: table;
+      }
+   `;
 
    function handleClick(i) {
-      if (squares[i] || calculateWinner(squares)) {
+      if (calculateWinner(squares) || squares[i]) {
          return;
       }
       const nextSquares = squares.slice();
@@ -23,62 +21,63 @@ function Board() {
       } else {
          nextSquares[i] = "O";
       }
-      setSquares(nextSquares);
-      setXIsNext(!xIsNext);
+      onPlay(nextSquares);
+   }
+
+   const winner = calculateWinner(squares);
+   let status;
+   if (winner) {
+      status = "Winner: " + winner;
+   } else {
+      status = "Next player: " + (xIsNext ? "X" : "O");
    }
 
    return (
-      <div>
-         <p className="text-sky-800 text-center font-bold text-3xl">
-            TicTacToe
-         </p>
-         <div className="mx-auto container h-screen w-screen flex justify-center items-center p-0 m-0">
-            <div>
-               <div className="status">{status}</div>
-               <div>
-                  <Square
-                     value={squares[0]}
-                     onSquareClick={() => handleClick(0)}
-                  />
-                  <Square
-                     value={squares[1]}
-                     onSquareClick={() => handleClick(1)}
-                  />
-                  <Square
-                     value={squares[2]}
-                     onSquareClick={() => handleClick(2)}
-                  />
-               </div>
-               <div>
-                  <Square
-                     value={squares[3]}
-                     onSquareClick={() => handleClick(3)}
-                  />
-                  <Square
-                     value={squares[4]}
-                     onSquareClick={() => handleClick(4)}
-                  />
-                  <Square
-                     value={squares[5]}
-                     onSquareClick={() => handleClick(5)}
-                  />
-               </div>
-               <div>
-                  <Square
-                     value={squares[6]}
-                     onSquareClick={() => handleClick(6)}
-                  />
-                  <Square
-                     value={squares[7]}
-                     onSquareClick={() => handleClick(7)}
-                  />
-                  <Square
-                     value={squares[8]}
-                     onSquareClick={() => handleClick(8)}
-                  />
-               </div>
-            </div>
-            <div className="p-4">Content</div>
+      <div className="mx-auto container flex justify-center items-center">
+         <div>
+            <div className="status">{status}</div>
+            <BoardRow>
+               <Square
+                  value={squares[0]}
+                  onSquareClick={() => handleClick(0)}
+               />
+               <Square
+                  value={squares[1]}
+                  onSquareClick={() => handleClick(1)}
+               />
+               <Square
+                  value={squares[2]}
+                  onSquareClick={() => handleClick(2)}
+               />
+            </BoardRow>
+            <BoardRow>
+               <Square
+                  value={squares[3]}
+                  onSquareClick={() => handleClick(3)}
+               />
+               <Square
+                  value={squares[4]}
+                  onSquareClick={() => handleClick(4)}
+               />
+               <Square
+                  value={squares[5]}
+                  onSquareClick={() => handleClick(5)}
+               />
+            </BoardRow>
+            <BoardRow>
+               <Square
+                  value={squares[6]}
+                  onSquareClick={() => handleClick(6)}
+               />
+               <Square
+                  value={squares[7]}
+                  onSquareClick={() => handleClick(7)}
+               />
+               <Square
+                  value={squares[8]}
+                  onSquareClick={() => handleClick(8)}
+               />
+            </BoardRow>
          </div>
       </div>
    );
@@ -109,23 +108,55 @@ function calculateWinner(squares) {
 }
 
 export default function TicTacToe() {
-   const [xIsNext, setXIsNext] = useState(true);
+   // const [xIsNext, setXIsNext] = useState(true);
    const [history, setHistory] = useState([Array(9).fill(null)]);
-   const currentSquares = history[history.length - 1];
+   // const currentSquares = history[history.length - 1];
+   const [currentMove, setCurrentMove] = useState(0);
+   const currentSquares = history[currentMove];
+   const xIsNext = currentMove % 2 === 0;
 
-   function handlePlay(nextSquares) {}
+   function handlePlay(nextSquares) {
+      const nextHistory = [...history.slice(0, currentMove + 1), nextSquares];
+      // setHistory([...history, nextSquares]);
+      // setXIsNext(!xIsNext);
+      setHistory(nextHistory);
+      setCurrentMove(nextHistory.length - 1);
+   }
+
+   function jumpTo(nextMove) {
+      setCurrentMove(nextMove);
+   }
+
+   const moves = history.map((squares, move) => {
+      let description;
+      if (move > 0) {
+         description = "Go to move #" + move;
+      } else {
+         description = "Go to game start";
+      }
+      return (
+         <li>
+            <button onClick={() => jumpTo(move)}>{description}</button>
+         </li>
+      );
+   });
 
    return (
       <div className="game">
-         <div className="game-board">
-            <Board
-               xIsNext={xIsNext}
-               squares={currentSquares}
-               onPlay={handlePlay}
-            />
-         </div>
-         <div className="game-info">
-            <ol>{/*TODO*/}</ol>
+         <p className="text-sky-800 text-center font-bold text-3xl">
+            TicTacToe
+         </p>
+         <div className="flex items-center justify-center h-screen w-screen">
+            <div className="game-board">
+               <Board
+                  xIsNext={xIsNext}
+                  squares={currentSquares}
+                  onPlay={handlePlay}
+               />
+            </div>
+            <div className="ml-5">
+               <ol>{moves}</ol>
+            </div>
          </div>
       </div>
    );
