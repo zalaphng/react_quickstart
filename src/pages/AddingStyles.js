@@ -1,11 +1,12 @@
-import React from 'react'
+import React from "react";
+import "../styles/AddingStyles.css";
 
 function AddingStyles() {
-  return (
-    <>
-        <img className="avatar" src='test.jpg' />
-    </>
-  )
+   return (
+      <>
+         <img className="avatar" src="test.jpg" alt="" />
+      </>
+   );
 }
 
-export default AddingStyles
+export default AddingStyles;
